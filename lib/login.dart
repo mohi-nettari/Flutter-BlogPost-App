@@ -1,60 +1,61 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_application_1/myHomePage.dart';
+import 'auth.dart';
 
-class MyLoginPage extends StatelessWidget {
- // const MyLoginPage({ Key? key }) : super(key: key);
-
+class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-appBar: AppBar (title: Text("Login Page") ),
-body : LoginBody());
-
+    return Scaffold(appBar: AppBar(title: Text('Hello World!')), body: Body());
   }
 }
 
-class LoginBody extends StatefulWidget {
- // const LoginBody({ Key? key }) : super(key: key);
+class Body extends StatefulWidget {
+  @override
+  _BodyState createState() => _BodyState();
+}
+
+class _BodyState extends State<Body> {
+   User? user;
 
   @override
-  _LoginBodyState createState() => _LoginBodyState();
-
-}
-
-class _LoginBodyState extends State<LoginBody> {
-  late String name;
-  TextEditingController controller = new TextEditingController();
-
-@override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    controller.dispose();
+  void initState() {
+    super.initState();
+    signOutGoogle();
   }
 
-void click (){
-  this.name = controller.text;
-  controller.clear();
-  FocusScope.of(context).unfocus();
-  Navigator.push(context, MaterialPageRoute(builder:(context)=> MyHomePage(this.name)));
+  void click() {
+    signup(context);
+    /*signInWithGoogle().then((user) => {
+          this.user = user ,
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => MyHomePage(user)))
+        });*/
+  }
 
-}
+  Widget googleLoginButton() {
+    return OutlineButton(
+        onPressed: this.click,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(45)),
+        splashColor: Colors.grey,
+        borderSide: BorderSide(color: Colors.grey),
+        child: Padding(
+            padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Image(image: AssetImage('assets/google_logo.png'), height: 35),
+                Padding(
+                    padding: EdgeInsets.only(left: 10),
+                    child: Text('Sign in with Google',
+                        style: TextStyle(color: Colors.grey, fontSize: 25)))
+              ],
+            )));
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Align(
-    alignment : Alignment.center,
-    child : Padding(padding: EdgeInsets.all(10),
-    child: TextField(controller: this.controller,
-    decoration: InputDecoration(prefixIcon:Icon(Icons.person_outlined)
-    ,labelText: "Enter your name :", 
-    border:OutlineInputBorder(borderSide: BorderSide(color: Colors.deepOrange,width: 5,)),
-    suffixIcon : IconButton(icon : Icon(Icons.login),
-   color: Colors.black,
-    tooltip: "log in",
-    splashColor: Colors.deepOrange,
-    onPressed: this.click )  )))
-    );
+    return Align(alignment: Alignment.center, child: googleLoginButton());
   }
 }

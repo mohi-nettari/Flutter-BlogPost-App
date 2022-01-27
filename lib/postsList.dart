@@ -1,48 +1,54 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'post.dart';
 
-class PostsList extends StatefulWidget {
-final List<Post> itemsList;
-PostsList(this.itemsList);
+class PostList extends StatefulWidget {
+  final List<Post> listItems;
+  final User user;
+
+  PostList(this.listItems, this.user);
 
   @override
-  _PostsListState createState() => _PostsListState();
+  _PostListState createState() => _PostListState();
 }
 
-class _PostsListState extends State<PostsList> {
-
-void like(Function callback){
-  this.setState(() {
-    callback();
-  });
-}
+class _PostListState extends State<PostList> {
+  void like(Function callBack) {
+    this.setState(() {
+      callBack();
+    });
+  }
 
   @override
-  // TODO: implement context
-  BuildContext get context => super.context;
-    @override
   Widget build(BuildContext context) {
     return ListView.builder(
-     itemCount: this.widget.itemsList.length,
-     itemBuilder: (context,index) {
-       var post = this.widget.itemsList[index];
-       return Card(
-                child: Row(children: <Widget>[
-                  Expanded(child: ListTile(title: Text(post.body),subtitle: Text(post.author))),
-
-                  Row(children: <Widget>[Container(child: Text(post.likes.toString(),
-                  style: TextStyle(fontSize: 20)),padding: EdgeInsets.fromLTRB(5, 8, 5, 8))
-                  ,IconButton(icon:  Icon(Icons.thumb_up),onPressed: () => this.like(post.likePost),color: post.isTheUserLiked ? Colors.green : Colors.black,)
-
-                  ],)
-                  
-                  ]),
-
-       );
-
-     },
-     
+      itemCount: this.widget.listItems.length,
+      itemBuilder: (context, index) {
+        var post = this.widget.listItems[index];
+        return Card(
+            child: Row(children: <Widget>[
+          Expanded(
+              child: ListTile(
+            title: Text(post.body),
+            subtitle: Text(post.author),
+          )),
+          Row(
+            children: <Widget>[
+              Container(
+                child: Text(post.usersLiked.length.toString(),
+                    style: TextStyle(fontSize: 20)),
+                padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
+              ),
+              IconButton(
+                  icon: Icon(Icons.thumb_up),
+                  onPressed: () => this.like(() => post.likePost(widget.user)),
+                  color: post.usersLiked.contains(widget.user.uid)
+                      ? Colors.green
+                      : Colors.black)
+            ],
+          )
+        ]));
+      },
     );
   }
 }

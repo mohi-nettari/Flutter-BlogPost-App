@@ -1,37 +1,50 @@
-
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_application_1/database.dart';
 import 'post.dart';
-import 'inputWidget.dart';
-import 'postsList.dart';
-
+import 'package:flutter_application_1/inputWidget.dart';
+import 'package:flutter_application_1/postsList.dart';
 class MyHomePage extends StatefulWidget {
-//  const MyHomePage({ Key? key }) : super(key: key);
-String name;
-MyHomePage(this.name);
+  final User user;
+
+  MyHomePage(this.user);
+
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
- // This widget is the root of your application.
-   List<Post> posts = []; 
+  List<Post> posts = [];
 
- void newPost(String text){
-   setState(() {
-     posts.add(new Post(text,this.widget.name));
-   });
-  
- }
+  void newPost(String text) {
+    var post = new Post(text, widget.user.displayName);
+    post.setId(savePoste(post));
+    this.setState(() {
+      posts.add(post);
+    });
+  }
+
+  void updatePostse() {
+    getAllPostse().then((posts) => {
+          this.setState(() {
+            this.posts = posts;
+          })
+        });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    updatePostse();
+  }
+
   @override
   Widget build(BuildContext context) {
-
-return Scaffold(
-appBar: AppBar (title: Text(this.widget.name+" Page") ,),
-body : Column(children: <Widget>[
-  Expanded(child: PostsList(this.posts)),
-  TextInputWidget(this.newPost)
-]));
-
+    return Scaffold(
+        appBar: AppBar(title: Text('Hello World!')),
+        body: Column(children: <Widget>[
+          Expanded(child: PostList(posts, widget.user)),
+          TextInputWidget(this.newPost)
+        ]));
   }
 }
