@@ -26,11 +26,16 @@ GoogleSignIn googleSignIn = GoogleSignIn();
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => MyHomePage(user)));
       } else{
-        print("fuuuucjk");
+         Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => MyHomePage(user)));
       } // if result not null we simply call the MaterialpageRoute,
         // for go to the HomePage screen
     }
   }
+
+
+
+  
     /*
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final GoogleSignIn googleSignIn = GoogleSignIn();
